@@ -5,7 +5,9 @@
 #Team Members' Name & Email:
 
 Leo Truong leo.truong@sjsu.edu
+
 Hayden Tu hayden.tu@sjsu.edu
+
 Alex Wong alex.wong02@sjsu.edu
 
 #Problem/Issue: As we use our email more and more, associating ourselves with different individuals and businesses, there's likely instances where we'd wished we can set automated rules to regulate our busy inbox for convenience. Although gmail does have spam detection and blocking by users, there are other filters and requests that yield great benefit. For instance, it's preferable to have an option to automatically filter, archive, or delete email messages that are old and outdated. Speaking of old emails, sometimes we may purchase from online stores where we receive our receipts through our inbox, and it may be more convenient to find them, whether it'd to retrieve it to collect a warranty or return an item, through automating archiving receipts with personalized labeling.

@@ -87,18 +87,13 @@ def moveFromTrashToInbox(message_ids):
         service.users().messages().modify(userId='me', id=message_id, body=modify_request).execute()
     print("Messages moved from trash to inbox successfully.")
 
-# Method to search for message IDs beased on the query specifically in trash
-def getMessageIDsInTrash(query):
-    response = service.users().messages().list(userId='me', labelIds=['TRASH'], q=query).execute()
-    message_ids = [message['id'] for message in response.get('messages', [])]
-    print('Found: ' + str(len(message_ids)))
-    return message_ids
-
 # Test code, Remove later!
 def test1():
-    ids = searchEmails('from:SP22: CS-46B Sec 01 - Intro to Data Strc')
+    ids = searchEmails('from:SP22: CS-46B Sec 01 - Intro to Data Strc before:2022/01/29')
     deleteEmailIndividually(ids)
 
 def undo():
-    ids = searchEmails('from:SP22: CS-46B Sec 01 - Intro to Data Strc', 'TRASH')
+    ids = searchEmails('from:SP22: CS-46B Sec 01 - Intro to Data Strc before:2022/01/29', 'TRASH')
     moveFromTrashToInbox(ids)
+
+undo()

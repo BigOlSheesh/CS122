@@ -1,4 +1,4 @@
-#Project Title: ZenMail
+#Project Title: EmailButler
 
 #Team Name: Capybara
 

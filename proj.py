@@ -12,8 +12,16 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+#window dimensions
 windowWidth = 1024
 windowLength = 1024
+
+# define the client file and scopes
+CLIENT_FILE = 'client_secret.json'
+SCOPES = ['https://mail.google.com/']
+
+# Stores the access token which allows access to the API
+creds = None
 
 class ProgramDisplay:
     #constructor
@@ -346,14 +354,6 @@ class PresetManager:
                 return(content)
         except FileNotFoundError:                                   #throw file not found error if invalid filepath
             messagebox.showerror("FileNotFoundError", "Specified file cannot be found.")
-            
-    #appends new specification(preset) to the specified preset file
-    def addToPreset(newPreset = "", fileName = ""):
-        if newPreset != "" and os.path.exists("presets/" + fileName + ".txt"):
-            with open ("presets/" + fileName + ".txt", 'a') as file:
-                file.write(newPreset + "\n")
-        else:
-            messagebox.showerror("FileNotFoundError", "Specified file cannot be found.")
 
     #creates new txt asking for name of preset
     def createPreset(nameOfPreset = "", contents = ""):     
@@ -362,21 +362,6 @@ class PresetManager:
         else:
             with open("presets/" + nameOfPreset + ".txt", "w") as file:
                 file.write(contents)    #this assumes contents has "\n" indent and the end already
-
-    #edit preset (not adding just choosing what to delete)
-    def deletePreset(fileName, deleteContents = ""):
-        if deleteContents != "" and os.path.exists("presets/" + fileName + ".txt"):
-            with open ("presets/" + fileName + ".txt", 'r') as file:
-                content = file.readlines()
-            if deleteContents + "\n" in content:
-                with open ("presets/" + fileName + ".txt", 'w') as file:
-                    for line in content:
-                        if deleteContents.lower() + "\n" != line.lower():
-                            file.write(line)
-            else:
-                messagebox.showinfo("Operation update", "Specified content to delete within \"" + fileName + "\" wasn't found. No changes were made.")
-        else:
-            messagebox.showerror("FileNotFoundError", "Specified file cannot be found. Deleting a specification was unsuccessful.")
 
     #delete entire txt of the specified preset
     def deleteEntirePreset(fileName):
@@ -401,14 +386,6 @@ class EmailListManager:
         except FileNotFoundError:                                   #throw file not found error if invalid filepath
             messagebox.showerror("FileNotFoundError", "Specified file cannot be found.")
 
-    #appends new specification(email) to the specified emailList file
-    def addToEmailList(newEmail = "", fileName = ""):
-        if newEmail != "" and os.path.exists("emailList/" + fileName + ".txt"):
-            with open ("emailList/" + fileName + ".txt", 'a') as file:
-                file.write(newEmail + "\n")
-        else:
-            messagebox.showerror("FileNotFoundError", "Specified file cannot be found.")
-
     #creates new txt asking for name of emailList
     def createEmailList(nameOfEmailList = "", contents = ""):     
         if (nameOfEmailList == "" or os.path.exists("emailList/" + nameOfEmailList + ".txt")):
@@ -416,21 +393,6 @@ class EmailListManager:
         else:
             with open("emailList/" + nameOfEmailList + ".txt", "w") as file:
                 file.write(contents)    #this assumes contents has "\n" indent and the end already  
-
-    #edit emailList (not adding just choosing what to delete)
-    def deleteEmail(fileName, deleteContents = ""):
-        if deleteContents != "" and os.path.exists("emailList/" + fileName + ".txt"):
-            with open ("emailList/" + fileName + ".txt", 'r') as file:
-                content = file.readlines()
-            if deleteContents + "\n" in content:
-                with open ("emailList/" + fileName + ".txt", 'w') as file:
-                    for line in content:
-                        if deleteContents.lower() + "\n" != line.lower():
-                            file.write(line)
-            else:
-                messagebox.showinfo("Operation update", "Specified content to delete within \"" + fileName + "\" wasn't found. No changes were made.")
-        else:
-            messagebox.showerror("FileNotFoundError", "Specified file cannot be found. Deleting email was unsuccessful.")
 
     #delete entire txt of the specified emailList
     def deleteEntireEmailList(fileName):

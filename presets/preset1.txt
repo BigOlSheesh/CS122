@@ -1,0 +1,4 @@
+Move to trash: [unread] after [7] days
+Move to trash: [read] after [14] days
+Move to trash: [all] after [21] days
+Move to trash: emails from user(s) [listOfEmailFile]

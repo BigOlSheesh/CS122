@@ -16,12 +16,7 @@ from googleapiclient.errors import HttpError
 windowWidth = 1024
 windowLength = 1024
 
-# define the client file and scopes
-CLIENT_FILE = 'client_secret.json'
-SCOPES = ['https://mail.google.com/']
-
-# Stores the access token which allows access to the API
-creds = None
+historyLog = ""
 
 class ProgramDisplay:
     #constructor
@@ -49,8 +44,11 @@ class ProgramDisplay:
 
 class ProgramFunction:
     #constructor
-    def __init__(self, frame):
+    def __init__(self, frame, gmailObj, historyLog):
         self.frame = frame
+        self.gmailObj = gmailObj
+        self.historyLog = historyLog
+
         self.askPresetLabel = None
         self.comboBox = None
         self.askPresetLabel2 = None
@@ -140,27 +138,47 @@ class ProgramFunction:
     #when user selects something in the combobox under presets
     def configurePresetTextBox(self, fileName = ""):
         self.resetFunctions("preset", True, False)
-        contents = PresetManager.listPresets(fileName)
-        self.presetSelectionTextBox.configure(state=NORMAL)
-        self.presetSelectionTextBox.delete("0.0", END)
-        self.presetSelectionTextBox.insert("0.0", contents)
-        self.presetSelectionTextBox.configure(state=DISABLED)
+        self.resetHistoryLog()
 
-        self.runPresetButton.configure(state = NORMAL)
-        self.editPresetButton.configure(state = NORMAL)
-        self.deletePresetButton.configure(state = NORMAL)
+        contents = PresetManager.listPresets(fileName)
+        if fileName != "example+instructions(do not run)":
+            self.presetSelectionTextBox.configure(state=NORMAL)
+            self.presetSelectionTextBox.delete("0.0", END)
+            self.presetSelectionTextBox.insert("0.0", contents)
+            self.presetSelectionTextBox.configure(state=DISABLED)
+
+            self.runPresetButton.configure(state = NORMAL)
+            self.editPresetButton.configure(state = NORMAL)
+            self.deletePresetButton.configure(state = NORMAL)
+        else:
+            self.historyLogLabel.configure(text = " P R E S E T  E X A M P L E ")
+            self.historyLog = self.historyLogTextBox.get("0.0", END).rstrip()
+            self.historyLogTextBox.configure(state=NORMAL)
+            self.historyLogTextBox.delete("0.0", END)
+            self.historyLogTextBox.insert("0.0", contents)
+            self.historyLogTextBox.configure(state=DISABLED)
 
     #when user selects something in the combobox under email
     def configureEmailTextBox(self, fileName = ""):
         self.resetFunctions("email", True, False)
-        contents = EmailListManager.listEmails(fileName)
-        self.emailSelectionTextBox.configure(state=NORMAL)
-        self.emailSelectionTextBox.delete("0.0", END)
-        self.emailSelectionTextBox.insert("0.0", contents)
-        self.emailSelectionTextBox.configure(state=DISABLED)
+        self.resetHistoryLog()
 
-        self.editEmailListButton.configure(state = NORMAL)
-        self.deleteEmailListButton.configure(state = NORMAL)
+        contents = EmailListManager.listEmails(fileName)
+        if fileName != "example+instructions(do not run)":
+            self.emailSelectionTextBox.configure(state=NORMAL)
+            self.emailSelectionTextBox.delete("0.0", END)
+            self.emailSelectionTextBox.insert("0.0", contents)
+            self.emailSelectionTextBox.configure(state=DISABLED)
+
+            self.editEmailListButton.configure(state = NORMAL)
+            self.deleteEmailListButton.configure(state = NORMAL)
+        else:
+            self.historyLogLabel.configure(text = " E M A I L  E X A M P L E ")
+            self.historyLog = self.historyLogTextBox.get("0.0", END).rstrip()
+            self.historyLogTextBox.configure(state=NORMAL)
+            self.historyLogTextBox.delete("0.0", END)
+            self.historyLogTextBox.insert("0.0", contents)
+            self.historyLogTextBox.configure(state=DISABLED)
 
     #when user clicks create new preset
     def createNewPreset(self):
@@ -204,7 +222,7 @@ class ProgramFunction:
         self.editPresetButton.place(x = 625, y = 245)
 
         title = self.comboBox.get()
-        content = self.presetSelectionTextBox.get("0.0", END)
+        content = self.presetSelectionTextBox.get("0.0", END).rstrip()
 
         if self.createPresetButton.cget("state") == "normal":
             PresetManager.createPreset(title, content)
@@ -214,6 +232,7 @@ class ProgramFunction:
 
         self.comboBox.configure(values=PresetManager.listFolderFileNames("presets"))
         self.resetFunctions("preset", True, True)
+        self.resetHistoryLog()
         
     def cancelPreset(self):
         self.savePresetButton.place_forget()
@@ -222,9 +241,20 @@ class ProgramFunction:
         self.editPresetButton.place(x = 625, y = 245)
 
         self.resetFunctions("preset", True, True)
+        self.resetHistoryLog()
 
     def runPreset(self):
-        pass
+        listOfPresets = PresetManager.listPresets(self.comboBox.get(), "list")
+        if (len(listOfPresets) > 0):
+            #self.gmailObj.checkAuthentication()
+            for preset in listOfPresets:
+                print(preset)
+                if "Move to trash [status] after [x] days:" in preset:
+                    pass
+                elif "Move to trash emails from user(s) [nameOfList]:" in preset:
+                    pass
+
+
 
     def createNewEmailList(self):
         self.resetFunctions("email", True, True)
@@ -264,7 +294,7 @@ class ProgramFunction:
         self.editEmailListButton.place(x = 664, y = 492)
 
         title = self.comboBox2.get()
-        content = self.emailSelectionTextBox.get("0.0", END)
+        content = self.emailSelectionTextBox.get("0.0", END).rstrip()
 
         if self.createEmailListButton.cget("state") == "normal":
             EmailListManager.createEmailList(title, content)
@@ -274,6 +304,7 @@ class ProgramFunction:
 
         self.comboBox2.configure(values=PresetManager.listFolderFileNames("emailList"))
         self.resetFunctions("email", True, True)
+        self.resetHistoryLog()
 
     def cancelEmailList(self):
         self.saveEmailListButton.place_forget()
@@ -282,6 +313,7 @@ class ProgramFunction:
         self.editEmailListButton.place(x = 664, y = 492)
 
         self.resetFunctions("email", True, True)
+        self.resetHistoryLog()
 
     #helper method to reset the box values and buttons
     def resetFunctions(self, presetOrEmail, buttons, boxes):
@@ -328,6 +360,13 @@ class ProgramFunction:
                 self.deleteEmailListButton.configure(state=DISABLED)
                 self.saveEmailListButton.configure(state=NORMAL)
                 self.cancelEmailListButton.configure(state=NORMAL)
+
+    def resetHistoryLog(self):
+        self.historyLogLabel.configure(text = " H I S T O R Y ")
+        self.historyLogTextBox.configure(state=NORMAL)
+        self.historyLogTextBox.delete("0.0", END)
+        self.historyLogTextBox.insert("0.0", self.historyLog)
+        self.historyLogTextBox.configure(state=DISABLED)
             
 
 
@@ -346,12 +385,17 @@ class PresetManager:
             messagebox.showerror("FileNotFoundError", "Specified file cannot be found.")
 
     #lists all the contents of the file (presets  in the file) on gui display
-    def listPresets(fileName = ""):
+    def listPresets(fileName = "", stringOrList = None):
         try:
             with open ("presets/" + fileName + ".txt", 'r') as file:                      #open filepath (read only)
-                content = file.read()
-                #print(content)                                  #get content and print
-                return(content)
+                if stringOrList == "list":
+                    content = file.readlines()
+                    content = [preset.rstrip("\n") for preset in content]
+                    return(content)
+                else:
+                    content = file.read()
+                    return(content)
+                
         except FileNotFoundError:                                   #throw file not found error if invalid filepath
             messagebox.showerror("FileNotFoundError", "Specified file cannot be found.")
 
@@ -377,12 +421,16 @@ class EmailListManager:
         pass
 
     #lists all the contents of the file (emails in the file) on gui display
-    def listEmails(fileName = ""):
+    def listEmails(fileName = "", stringOrList = None):
         try:
             with open ("emailList/" + fileName + ".txt", 'r') as file:                      #open filepath (read only)
-                content = file.read()
-                #print(content)                                  #get content and print
-                return(content)
+                if stringOrList == "list":
+                    content = file.readlines()
+                    content = [email.rstrip("\n") for email in content]
+                    return(content)
+                else:
+                    content = file.read()
+                    return(content)
         except FileNotFoundError:                                   #throw file not found error if invalid filepath
             messagebox.showerror("FileNotFoundError", "Specified file cannot be found.")
 
@@ -402,6 +450,91 @@ class EmailListManager:
             messagebox.showerror("FileNotFoundError", "Specified file cannot be found. Deleting entire emailList was unsuccessful.")
 
 
+class gAPI:
+    #constructor
+    def __init__(self):
+        # define the client file and scopes
+        self.CLIENT_FILE = 'client_secret.json'
+        self.SCOPES = ['https://mail.google.com/']
+        # Stores the access token which allows access to the API
+        self.creds = None
+        self.service = None
+
+    def checkAuthentication(self):
+        if os.path.exists('token.json'):
+            self.creds = Credentials.from_authorized_user_file('token.json', self.SCOPES)
+
+        # Otherwise, generete the token.json file
+        if not self.creds or not self.creds.valid:
+            if self.creds and self.creds.expired and self.creds.refresh_token:
+                self.creds.refresh(Request())
+            else:
+                # Launches the authentication page 
+                flow = InstalledAppFlow.from_client_secrets_file(self.CLIENT_FILE, self.SCOPES)
+                # Creates the credentials object that will be the access token that allows the app to connect to Google APIs
+                self.creds = flow.run_local_server(port=0)
+            # Writes the access token
+            with open('token.json', 'w') as token:
+                token.write(self.creds.to_json())
+
+        # define the API service
+        self.service = build('gmail', 'v1', credentials=self.creds)
+    
+    # Method to search for message IDs based on the query
+    # returns a list of email ids that match the query
+    def searchEmails(self, query, labelIds=None):
+        all_message_ids = []
+        next_page_token = None
+        while True:
+            # search for a list of messages with query
+            message_list_response = self.service.users().messages().list(
+                        userId='me',
+                        q = query,
+                        labelIds=labelIds,
+                        pageToken=next_page_token
+                    ).execute()
+            
+            # Gets the message IDs from message_list_response
+            message_ids = [message['id'] for message in message_list_response.get('messages', [])]
+            all_message_ids.extend(message_ids)
+
+            # Checks if there are more pages (meaning more than 100 messages)
+            next_page_token = message_list_response.get('nextPageToken')
+            if not next_page_token:
+                break
+
+        print(str(len(all_message_ids)) + ' Total Messages using query: ' + query + ' Lable: ' + str(labelIds))
+        return all_message_ids
+
+    # Method to delete emails based on a message id
+    def deleteEmailIndividually(self,message_ids):
+        total_deleted = 0
+        # Takes each individual message_id from the list 
+        for message_id in message_ids:
+            try:
+                # Requests the API service to move the email that correlates with the message id to the trash
+                self.service.users().messages().trash(
+                    userId='me',
+                    id = message_id
+                    ).execute()
+                total_deleted += 1
+            except Exception as e:
+                print(f'Error deleting message with ID {message_id}: {e}')
+
+        print(str(total_deleted) + ' Total Messages deleted')
+
+    # Method to move emails from trash to Inbox
+    def moveFromTrashToInbox(self,message_ids):
+        for message_id in message_ids:
+            # Removes the trash label and add a inbox label
+            modify_request = {
+                'removeLabelIds': ['TRASH'],
+                'addLabelIds': ['INBOX']
+            }
+            # Requests the API service to modify the messages that correlate to the message id with the modify_request
+            self.service.users().messages().modify(userId='me', id=message_id, body=modify_request).execute()
+        print("Messages moved from trash to inbox successfully.")
+
             
             
 
@@ -417,8 +550,9 @@ class EmailListManager:
 window = tk.Tk()                                         #main window
 frame = ttk.Frame()                       #main frame (add stuff here))
 frame.pack(fill = tk.BOTH, expand = True)                #pack this onto the display
+gmailObj = gAPI()
 PD = ProgramDisplay(window, frame, "background/background.png", "background/icon.ico")
-PF = ProgramFunction(frame)
+PF = ProgramFunction(frame, gmailObj, historyLog)
 window.mainloop()
 #-----------------------------------------------------------------------------------------
 

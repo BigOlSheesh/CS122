@@ -31,7 +31,7 @@ Alex Wong alex.wong02@sjsu.edu
 ### Built with
 * CustomTkinter [https://customtkinter.tomschimansky.com/](https://customtkinter.tomschimansky.com/)
 * Pillow [https://pillow.readthedocs.io/en/stable/](https://pillow.readthedocs.io/en/stable/)
-* Gmail API [https://developers.google.com/gmail/api/reference/rest](https://developers.google.com/gmail/api/reference/rest)
+* Gmail API [https://developers.google.com/gmail/api/guides](https://developers.google.com/gmail/api/guides)
 
 ## Getting Started
 

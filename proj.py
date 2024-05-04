@@ -624,13 +624,13 @@ class gAPI:
                     orOrAnd = " AND "
                 else:
                     messagebox.showerror("USER INPUT INVALID SYNTAX", "EmailList was chosen without specifying '|' or '&'. Please fix and try again.")
-    
-                if orOrAnd == "|" or orOrAnd == "&":
+
+                if orOrAnd == " OR " or orOrAnd == " AND ":
                     listOfEmails = EmailListManager.listEmails(substring, "list")
                     newCommand = commandType + listOfEmails[0]
                     for email in listOfEmails[1:]:
                         newCommand = newCommand + orOrAnd + commandType + email
-                    print(newCommand)
+                    print("--> " + newCommand)
                     self.query = self.query.replace(originalCommand + " ", newCommand + " ")
                     i = i + len(newCommand)
                     print (i)

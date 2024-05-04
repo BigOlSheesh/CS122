@@ -9,6 +9,7 @@ import re
 #------------google api imports needed to access email contents------------
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
+import google.oauth2.credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -18,6 +19,9 @@ windowWidth = 1024
 windowLength = 1024
 
 historyLog = ""
+
+CLIENT_FILE = 'client_secret.json'
+SCOPES = ['https://mail.google.com/']
 
 class ProgramDisplay:
     #constructor
@@ -268,9 +272,9 @@ class ProgramFunction:
                             specification = specification.replace("removeLabelIds: [", "").replace("]", "")
                             modifyRequestDict["removeLabelIds"] = specification.split(", ")
                         else:
-                            query = gAPI().listEmailQuery(specification)
+                            query = G.listEmailQuery(specification)
                 print(modifyRequestDict)
-                gAPI().moveEmail(modifyRequestDict, gAPI().searchEmails(query))
+                G.moveEmail(modifyRequestDict, G.searchEmails(query))
 
 
     def createNewEmailList(self):
@@ -468,13 +472,12 @@ class EmailListManager:
 
 
 class gAPI:
+
     #constructor
     def __init__(self):
-        # define the client file and scopes
-        self.CLIENT_FILE = 'client_secret.json'
-        self.SCOPES = ['https://mail.google.com/']
         # Stores the access token which allows access to the API
         self.creds = None
+        self.service = None  
 
     def resetToken(self):
         file_path = "token.json" 
@@ -487,21 +490,28 @@ class gAPI:
         try:
             if os.path.exists('client_secret.json'):
                 if os.path.exists('token.json'):
-                    self.creds = Credentials.from_authorized_user_file('token.json', self.SCOPES)
-
+                    self.creds = google.oauth2.credentials.Credentials.from_authorized_user_file('token.json', SCOPES)
+                    print("1--------------------------")
+                    print(type(self.creds))
+                    print(self.creds)
                 # Otherwise, generete the token.json file
                 if not self.creds or not self.creds.valid:
                     if self.creds and self.creds.expired and self.creds.refresh_token:
                         self.creds.refresh(Request())
                     else:
                         # Launches the authentication page 
-                        flow = InstalledAppFlow.from_client_secrets_file(self.CLIENT_FILE, self.SCOPES)
+                        flow = InstalledAppFlow.from_client_secrets_file(CLIENT_FILE, SCOPES)
                         # Creates the credentials object that will be the access token that allows the app to connect to Google APIs
                         self.creds = flow.run_local_server(port=0)
                     # Writes the access token
                     with open('token.json', 'w') as token:
                         token.write(self.creds.to_json())
 
+                # define the API service 
+                self.service = build('gmail', 'v1', credentials=self.creds)
+                print("2--------------------------")
+                print(type(self.service))
+                print(self.service)
             else:
                 messagebox.showerror("FileNotFoundError", "Please generate and place a client_secret.json file in folder directory and relaunch application.")
         except Exception as e:  # Catch any authentication errors
@@ -514,8 +524,6 @@ class gAPI:
     def searchEmails(self, query, labelIds=None):
         all_message_ids = []
         next_page_token = None
-        # define the API service
-        self.service = build('gmail', 'v1', credentials=self.creds)
         while True:
             # search for a list of messages with query
             message_list_response = self.service.users().messages().list(
@@ -567,11 +575,11 @@ class gAPI:
         print("Messages moved from trash to inbox successfully.")
 
     def moveEmail(self, modifyRequest, messageIds):
-        total_deleted = 0;
+        total_deleted = 0
         for message_id in messageIds:
             self.PF.configureHistoryLogTextBox(message_id + "has been moved.")
             self.service.users().messages().modify(userId='me', id=message_id, body=modifyRequest).execute()
-        print(len(message_id) + " messages have been moved successfully.")
+        print(str(len(messageIds)) + " messages have been moved successfully.")
 
     def listEmailQuery(self, query = ""):
         print(query)
@@ -644,7 +652,6 @@ class gAPI:
             window.destroy()
 
     def onClose(self):
-        self.resetToken()
         window.destroy()
 
 

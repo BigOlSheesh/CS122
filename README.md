@@ -35,7 +35,7 @@ Alex Wong alex.wong02@sjsu.edu
   git clone https://github.com/BigOlSheesh/ZenMail.git
   ```
 2. Setting up OAuth 2.0 Client IDs
-    - Create a Google Cloud Project
+    - Create a Google Cloud Project at [https://console.cloud.google.com/](https://console.cloud.google.com/)
     - Create OAuth Page
     - Create OAuth Account
     - Download Client File Json

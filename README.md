@@ -32,3 +32,10 @@ Install the necessary modules with pip
   ```sh
   pip install customtkinter
   ```
+  ```sh
+  pip install pillow
+  ```
+  ```sh
+  pip install --upgrade google-api-python-client google-auth-oauthlib google-auth-httplib2
+  ```
+  

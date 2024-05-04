@@ -475,7 +475,6 @@ class gAPI:
         self.SCOPES = ['https://mail.google.com/']
         # Stores the access token which allows access to the API
         self.creds = None
-        self.service = None
 
     def resetToken(self):
         file_path = "token.json" 
@@ -485,33 +484,38 @@ class gAPI:
             pass
 
     def checkAuthentication(self):
-        if os.path.exists('client_secret.json'):
-            if os.path.exists('token.json'):
-                self.creds = Credentials.from_authorized_user_file('token.json', self.SCOPES)
+        try:
+            if os.path.exists('client_secret.json'):
+                if os.path.exists('token.json'):
+                    self.creds = Credentials.from_authorized_user_file('token.json', self.SCOPES)
 
-            # Otherwise, generete the token.json file
-            if not self.creds or not self.creds.valid:
-                if self.creds and self.creds.expired and self.creds.refresh_token:
-                    self.creds.refresh(Request())
-                else:
-                    # Launches the authentication page 
-                    flow = InstalledAppFlow.from_client_secrets_file(self.CLIENT_FILE, self.SCOPES)
-                    # Creates the credentials object that will be the access token that allows the app to connect to Google APIs
-                    self.creds = flow.run_local_server(port=0)
-                # Writes the access token
-                with open('token.json', 'w') as token:
-                    token.write(self.creds.to_json())
-            
-            # define the API service
-            self.service = build('gmail', 'v1', credentials=self.creds)
-        else:
-             messagebox.showerror("FileNotFoundError", "Please generate and place a client_secret.json file in folder directory and relaunch application.")
-    
+                # Otherwise, generete the token.json file
+                if not self.creds or not self.creds.valid:
+                    if self.creds and self.creds.expired and self.creds.refresh_token:
+                        self.creds.refresh(Request())
+                    else:
+                        # Launches the authentication page 
+                        flow = InstalledAppFlow.from_client_secrets_file(self.CLIENT_FILE, self.SCOPES)
+                        # Creates the credentials object that will be the access token that allows the app to connect to Google APIs
+                        self.creds = flow.run_local_server(port=0)
+                    # Writes the access token
+                    with open('token.json', 'w') as token:
+                        token.write(self.creds.to_json())
+
+            else:
+                messagebox.showerror("FileNotFoundError", "Please generate and place a client_secret.json file in folder directory and relaunch application.")
+        except Exception as e:  # Catch any authentication errors
+            print("Authentication Error:", e)
+            return False 
+        return True 
+
     # Method to search for message IDs based on the query
     # returns a list of email ids that match the query
     def searchEmails(self, query, labelIds=None):
         all_message_ids = []
         next_page_token = None
+        # define the API service
+        self.service = build('gmail', 'v1', credentials=self.creds)
         while True:
             # search for a list of messages with query
             message_list_response = self.service.users().messages().list(

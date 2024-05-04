@@ -36,8 +36,7 @@ Alex Wong alex.wong02@sjsu.edu
   ```
 2. Setting up OAuth 2.0 Client IDs
     - Create a Google Cloud Project at [https://console.cloud.google.com/](https://console.cloud.google.com/)
-
-      ![Untitled video - Made with Clipchamp](https://github.com/BigOlSheesh/ZenMail/assets/104650216/a6fbdb0c-0d5c-41d9-8be9-c285b2756e26)
+![Untitledvideo-MadewithClipchamp1-ezgif com-video-to-gif-converter](https://github.com/BigOlSheesh/ZenMail/assets/104650216/8b124a90-6bf9-4a7a-8f9b-f34464207972)
 
     - Create OAuth Page
     - Create OAuth Account

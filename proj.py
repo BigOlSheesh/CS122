@@ -5,6 +5,7 @@ import customtkinter as ctk                # allows for more customization in gu
 from tkinter import ttk, messagebox
 from tkinter import *
 from PIL import Image, ImageTk
+import re
 #------------google api imports needed to access email contents------------
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -44,9 +45,9 @@ class ProgramDisplay:
 
 class ProgramFunction:
     #constructor
-    def __init__(self, frame, gmailObj, historyLog):
+    def __init__(self, frame, historyLog):
         self.frame = frame
-        self.gmailObj = gmailObj
+        self.gmailObj = gAPI()
         self.historyLog = historyLog
 
         self.askPresetLabel = None
@@ -141,7 +142,7 @@ class ProgramFunction:
         self.resetHistoryLog()
 
         contents = PresetManager.listPresets(fileName)
-        if fileName != "example+instructions(do not run)":
+        if fileName != "PRESET_MANUAL(do not run)":
             self.presetSelectionTextBox.configure(state=NORMAL)
             self.presetSelectionTextBox.delete("0.0", END)
             self.presetSelectionTextBox.insert("0.0", contents)
@@ -164,7 +165,7 @@ class ProgramFunction:
         self.resetHistoryLog()
 
         contents = EmailListManager.listEmails(fileName)
-        if fileName != "example+instructions(do not run)":
+        if fileName != "EMAIL_MANUAL(do not run)":
             self.emailSelectionTextBox.configure(state=NORMAL)
             self.emailSelectionTextBox.delete("0.0", END)
             self.emailSelectionTextBox.insert("0.0", contents)
@@ -179,6 +180,12 @@ class ProgramFunction:
             self.historyLogTextBox.delete("0.0", END)
             self.historyLogTextBox.insert("0.0", contents)
             self.historyLogTextBox.configure(state=DISABLED)
+
+    def configureHistoryLogTextBox(self, contentString):
+        self.historyLogTextBox.configure(state=NORMAL)
+        self.historyLogTextBox.insert(END, "\n" + contentString)
+        self.historyLogTextBox.configure(state=DISABLED)
+        self.historyLog = self.historyLogTextBox.get("0.0", END).rstrip()
 
     #when user clicks create new preset
     def createNewPreset(self):
@@ -244,16 +251,26 @@ class ProgramFunction:
         self.resetHistoryLog()
 
     def runPreset(self):
+        print("running")
         listOfPresets = PresetManager.listPresets(self.comboBox.get(), "list")
         if (len(listOfPresets) > 0):
-            #self.gmailObj.checkAuthentication()
             for preset in listOfPresets:
                 print(preset)
-                if "Move to trash [status] after [x] days:" in preset:
-                    pass
-                elif "Move to trash emails from user(s) [nameOfList]:" in preset:
-                    pass
-
+                modifyRequestDict = {}
+                query = ""
+                listOfSpecifications = preset.strip().split("/ ")
+                if (len(listOfSpecifications) > 1):
+                    for specification in listOfSpecifications:
+                        if "addLabelIds" in specification:
+                            specification = specification.replace("addLabelIds: [", "").replace("]", "")
+                            modifyRequestDict["addLabelIds"] = specification.split(", ")
+                        elif "removeLabelIds" in specification:
+                            specification = specification.replace("removeLabelIds: [", "").replace("]", "")
+                            modifyRequestDict["removeLabelIds"] = specification.split(", ")
+                        else:
+                            query = gAPI().listEmailQuery(specification)
+                print(modifyRequestDict)
+                gAPI().moveEmail(modifyRequestDict, gAPI().searchEmails(query))
 
 
     def createNewEmailList(self):
@@ -460,25 +477,35 @@ class gAPI:
         self.creds = None
         self.service = None
 
+    def resetToken(self):
+        file_path = "token.json" 
+        try:
+            os.remove(file_path)
+        except FileNotFoundError:
+            pass
+
     def checkAuthentication(self):
-        if os.path.exists('token.json'):
-            self.creds = Credentials.from_authorized_user_file('token.json', self.SCOPES)
+        if os.path.exists('client_secret.json'):
+            if os.path.exists('token.json'):
+                self.creds = Credentials.from_authorized_user_file('token.json', self.SCOPES)
 
-        # Otherwise, generete the token.json file
-        if not self.creds or not self.creds.valid:
-            if self.creds and self.creds.expired and self.creds.refresh_token:
-                self.creds.refresh(Request())
-            else:
-                # Launches the authentication page 
-                flow = InstalledAppFlow.from_client_secrets_file(self.CLIENT_FILE, self.SCOPES)
-                # Creates the credentials object that will be the access token that allows the app to connect to Google APIs
-                self.creds = flow.run_local_server(port=0)
-            # Writes the access token
-            with open('token.json', 'w') as token:
-                token.write(self.creds.to_json())
-
-        # define the API service
-        self.service = build('gmail', 'v1', credentials=self.creds)
+            # Otherwise, generete the token.json file
+            if not self.creds or not self.creds.valid:
+                if self.creds and self.creds.expired and self.creds.refresh_token:
+                    self.creds.refresh(Request())
+                else:
+                    # Launches the authentication page 
+                    flow = InstalledAppFlow.from_client_secrets_file(self.CLIENT_FILE, self.SCOPES)
+                    # Creates the credentials object that will be the access token that allows the app to connect to Google APIs
+                    self.creds = flow.run_local_server(port=0)
+                # Writes the access token
+                with open('token.json', 'w') as token:
+                    token.write(self.creds.to_json())
+            
+            # define the API service
+            self.service = build('gmail', 'v1', credentials=self.creds)
+        else:
+             messagebox.showerror("FileNotFoundError", "Please generate and place a client_secret.json file in folder directory and relaunch application.")
     
     # Method to search for message IDs based on the query
     # returns a list of email ids that match the query
@@ -503,11 +530,11 @@ class gAPI:
             if not next_page_token:
                 break
 
-        print(str(len(all_message_ids)) + ' Total Messages using query: ' + query + ' Lable: ' + str(labelIds))
+        print(str(len(all_message_ids)) + ' Total Messages using query: ' + query + ' Label: ' + str(labelIds))
         return all_message_ids
 
     # Method to delete emails based on a message id
-    def deleteEmailIndividually(self,message_ids):
+    def deleteEmail(self,message_ids):
         total_deleted = 0
         # Takes each individual message_id from the list 
         for message_id in message_ids:
@@ -524,7 +551,7 @@ class gAPI:
         print(str(total_deleted) + ' Total Messages deleted')
 
     # Method to move emails from trash to Inbox
-    def moveFromTrashToInbox(self,message_ids):
+    def recoverEmail(self,message_ids):
         for message_id in message_ids:
             # Removes the trash label and add a inbox label
             modify_request = {
@@ -535,9 +562,86 @@ class gAPI:
             self.service.users().messages().modify(userId='me', id=message_id, body=modify_request).execute()
         print("Messages moved from trash to inbox successfully.")
 
-            
-            
+    def moveEmail(self, modifyRequest, messageIds):
+        total_deleted = 0;
+        for message_id in messageIds:
+            self.PF.configureHistoryLogTextBox(message_id + "has been moved.")
+            self.service.users().messages().modify(userId='me', id=message_id, body=modifyRequest).execute()
+        print(len(message_id) + " messages have been moved successfully.")
 
+    def listEmailQuery(self, query = ""):
+        print(query)
+        self.query = query + " "
+        i = 0
+        while i in range(len(self.query)):
+            originalCommand = ""
+            substring = ""
+            orOrAnd = ""
+            commandType = ""
+            if self.query[i] == "f" and 0 <= i + 5 <= len(self.query):
+                substring = self.query[i : i + 5]
+                if "from:" in substring:
+                    commandType = "from:"
+                    substring = self.query[i : self.query.find(" ", i)]
+            if self.query[i] == "t" and 0 <= i + 5 <= len(self.query):
+                substring = self.query[i : i + 3]
+                if "to:" in substring:
+                    commandType = "to:"
+                    substring = self.query[i : self.query.find(" ", i)]
+            if self.query[i] == "c" and 0 <= i + 5 <= len(self.query):
+                substring = self.query[i : i + 3]
+                if "cc:" in substring:
+                    commandType = "cc:"
+                    substring = self.query[i : self.query.find(" ", i)]
+            if self.query[i] == "b" and 0 <= i + 5 <= len(self.query):
+                substring = self.query[i : i + 4]
+                if "bcc:" in substring:
+                    commandType = "bcc:"
+                    substring = self.query[i : self.query.find(" ", i)]
+
+            if substring != "" and commandType != "" and "@" not in substring:
+                print("found")
+                originalCommand = substring
+                substring = substring.replace(commandType, "")
+                orOrAnd = substring[0]
+                substring = substring.replace(orOrAnd, "")
+
+                if orOrAnd == "|":
+                    orOrAnd = " OR "
+                elif orOrAnd == "&":
+                    orOrAnd = " AND "
+                else:
+                    messagebox.showerror("USER INPUT INVALID SYNTAX", "EmailList was chosen without specifying '|' or '&'. Please fix and try again.")
+    
+                if orOrAnd == "|" or orOrAnd == "&":
+                    listOfEmails = EmailListManager.listEmails(substring, "list")
+                    newCommand = commandType + listOfEmails[0]
+                    for email in listOfEmails[1:]:
+                        newCommand = newCommand + orOrAnd + commandType + email
+                    print(newCommand)
+                    self.query = self.query.replace(originalCommand + " ", newCommand + " ")
+                    i = i + len(newCommand)
+                    print (i)
+                else:
+                    i+=1
+            else:
+                i+=1
+        print(self.query)
+        return self.query
+
+    def onOpen(self):
+        self.checkAuthentication()
+        if os.path.exists('client_secret.json'):
+            window.protocol("WM_DELETE_WINDOW", lambda: self.onClose())
+            frame.pack(fill = tk.BOTH, expand = True)                #pack this onto the display
+            self.PD = ProgramDisplay(window, frame, "background/background.png", "background/icon.ico")
+            self.PF = ProgramFunction(frame, historyLog)
+        else:
+            window.destroy()
+
+    def onClose(self):
+        self.resetToken()
+        window.destroy()
 
 
 
@@ -548,11 +652,9 @@ class gAPI:
 
 #--------------------------------------run program----------------------------------------
 window = tk.Tk()                                         #main window
-frame = ttk.Frame()                       #main frame (add stuff here))
-frame.pack(fill = tk.BOTH, expand = True)                #pack this onto the display
-gmailObj = gAPI()
-PD = ProgramDisplay(window, frame, "background/background.png", "background/icon.ico")
-PF = ProgramFunction(frame, gmailObj, historyLog)
+frame = ttk.Frame()                                      #main frame (add stuff here))
+G = gAPI()                                          # on start ask for authentication before doing anything
+G.onOpen()
 window.mainloop()
 #-----------------------------------------------------------------------------------------
 

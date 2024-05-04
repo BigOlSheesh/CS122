@@ -36,14 +36,31 @@ Alex Wong alex.wong02@sjsu.edu
   ```
 2. Setting up OAuth 2.0 Client IDs
     - Create a Google Cloud Project at [https://console.cloud.google.com/](https://console.cloud.google.com/)
-![Untitledvideo-MadewithClipchamp1-ezgif com-video-to-gif-converter](https://github.com/BigOlSheesh/ZenMail/assets/104650216/8b124a90-6bf9-4a7a-8f9b-f34464207972)
-
+      
+        ![Untitledvideo-MadewithClipchamp1-ezgif com-video-to-gif-converter](https://github.com/BigOlSheesh/ZenMail/assets/104650216/8b124a90-6bf9-4a7a-8f9b-f34464207972)
+    
     - Create OAuth Page
+
+        ![e-MadewithClipchamp-ezgif com-video-to-gif-converter](https://github.com/BigOlSheesh/ZenMail/assets/104650216/ef2d991b-c176-4b36-88d4-8fed530172cc)
+   
+    - Publish App
+  
+        ![2024-05-0400-43-12-ezgif com-video-to-gif-converter](https://github.com/BigOlSheesh/ZenMail/assets/104650216/24bf49ca-e374-4d4e-b167-b0c266395ee3)
+
     - Create OAuth Account
+      
+        ![f-MadewithClipchamp-ezgif com-video-to-gif-converter](https://github.com/BigOlSheesh/ZenMail/assets/104650216/66a9bb9d-ef6b-46ee-b0d0-ba41b83dd6f0)
+
     - Download Client File Json
+
+        ![2024-05-0400-32-23-ezgif com-video-to-gif-converter](https://github.com/BigOlSheesh/ZenMail/assets/104650216/f8da0e6a-d21b-454a-a2ab-c2fca08913d5)
+
     - Enable Gmail API
-3. Rename Client File Json to client_secret.json
-4. Move client_secret.json to the directory where this project is located
+
+        ![p-MadewithClipchamp-ezgif com-video-to-gif-converter](https://github.com/BigOlSheesh/ZenMail/assets/104650216/ae6c035a-3be4-40cc-bcb0-6225b80f9152)
+
+2. Rename Client File Json to client_secret.json
+3. Move client_secret.json to the directory where this project is located
 
 ### Installation
 Install the necessary modules with pip:

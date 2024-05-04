@@ -271,9 +271,14 @@ class ProgramFunction:
                         elif "removeLabelIds" in specification:
                             specification = specification.replace("removeLabelIds: [", "").replace("]", "")
                             modifyRequestDict["removeLabelIds"] = specification.split(", ")
+                        elif "labelIdsFrom" in specification:
+                            specification = specification.replace("labelIdsFrom: [", "").replace("]", "")
+
                         else:
                             query = G.listEmailQuery(specification)
-                print(modifyRequestDict)
+                self.configureHistoryLogTextBox("MODIFICATION REQUEST(S): " + str(modifyRequestDict) +
+                                                "\nSPECIFICATION(S): " + str(query) +
+                                                "\n- - - - - - - S T A R T  H E R E - - - - - - -")
                 G.moveEmail(modifyRequestDict, G.searchEmails(query))
 
 
@@ -400,7 +405,6 @@ class PresetManager:
         try:
             fileNames = os.listdir(folderPath)        #returns a list of the names
             fileNames =[file[:-4] for file in fileNames if file.endswith(".txt")]
-            #print(fileNames)
             return(fileNames)
         except FileNotFoundError:                                   #throw file not found error if invalid filepath
             messagebox.showerror("FileNotFoundError", "Specified file cannot be found.")
@@ -491,9 +495,7 @@ class gAPI:
             if os.path.exists('client_secret.json'):
                 if os.path.exists('token.json'):
                     self.creds = google.oauth2.credentials.Credentials.from_authorized_user_file('token.json', SCOPES)
-                    print("1--------------------------")
-                    print(type(self.creds))
-                    print(self.creds)
+
                 # Otherwise, generete the token.json file
                 if not self.creds or not self.creds.valid:
                     if self.creds and self.creds.expired and self.creds.refresh_token:
@@ -509,9 +511,6 @@ class gAPI:
 
                 # define the API service 
                 self.service = build('gmail', 'v1', credentials=self.creds)
-                print("2--------------------------")
-                print(type(self.service))
-                print(self.service)
             else:
                 messagebox.showerror("FileNotFoundError", "Please generate and place a client_secret.json file in folder directory and relaunch application.")
         except Exception as e:  # Catch any authentication errors
@@ -545,41 +544,13 @@ class gAPI:
         print(str(len(all_message_ids)) + ' Total Messages using query: ' + query + ' Label: ' + str(labelIds))
         return all_message_ids
 
-    # Method to delete emails based on a message id
-    def deleteEmail(self,message_ids):
-        total_deleted = 0
-        # Takes each individual message_id from the list 
-        for message_id in message_ids:
-            try:
-                # Requests the API service to move the email that correlates with the message id to the trash
-                self.service.users().messages().trash(
-                    userId='me',
-                    id = message_id
-                    ).execute()
-                total_deleted += 1
-            except Exception as e:
-                print(f'Error deleting message with ID {message_id}: {e}')
-
-        print(str(total_deleted) + ' Total Messages deleted')
-
-    # Method to move emails from trash to Inbox
-    def recoverEmail(self,message_ids):
-        for message_id in message_ids:
-            # Removes the trash label and add a inbox label
-            modify_request = {
-                'removeLabelIds': ['TRASH'],
-                'addLabelIds': ['INBOX']
-            }
-            # Requests the API service to modify the messages that correlate to the message id with the modify_request
-            self.service.users().messages().modify(userId='me', id=message_id, body=modify_request).execute()
-        print("Messages moved from trash to inbox successfully.")
-
     def moveEmail(self, modifyRequest, messageIds):
         total_deleted = 0
         for message_id in messageIds:
             self.PF.configureHistoryLogTextBox(message_id + "has been moved.")
             self.service.users().messages().modify(userId='me', id=message_id, body=modifyRequest).execute()
-        print(str(len(messageIds)) + " messages have been moved successfully.")
+        self.PF.configureHistoryLogTextBox("--------------------------------------------------------------------")
+        messagebox.showinfo("OPERATION COMPLETE", str(len(messageIds)) + " messages have been moved successfully.")
 
     def listEmailQuery(self, query = ""):
         print(query)
@@ -652,6 +623,7 @@ class gAPI:
             window.destroy()
 
     def onClose(self):
+        self.resetToken()
         window.destroy()
 
 

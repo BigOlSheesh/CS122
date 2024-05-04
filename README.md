@@ -74,4 +74,8 @@ Install the necessary modules with pip:
   pip install --upgrade google-api-python-client google-auth-oauthlib google-auth-httplib2
   ```
 
+## Snapshot
+![image](https://github.com/BigOlSheesh/ZenMail/assets/104650216/d06ce8e3-f8c4-4974-956d-1113dfc379d1)
 
+## Usage
+This Python application assists users in the process of automated deletion of emails. The GUI is built with Tkinter, Custom Tkinter, and Pillow. It utilizes Gmail API to accomplish the deletion of emails.

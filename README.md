@@ -27,7 +27,7 @@ Alex Wong alex.wong02@sjsu.edu
 5) Executing these presets, the code will filter, archive, delete, or label the necessary changes of each preset the user has saved.
 6) When user enters the GUI, they can click a button 'optimize' to start the process of making changes to the user's inbox, following the given presets saved within the application. The program will return feedback via the GUI to the user when operations are complete.
 
-### Installation
+## Installation
 Install the necessary modules with pip
   ```sh
   pip install customtkinter

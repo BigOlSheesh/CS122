@@ -1,0 +1,103 @@
+----------------------------INSTRUCTIONS----------------------------
+***DO NOT INDENT UNLESS IT IS A NEW PRESET INSTRUCTION***
+- for add or removeLabelIds use ", " in between it and specifications
+- for AND statements, use " AND " in between
+- for OR statements, specify " OR " between and place conditions in ()
+- see example above for clarification
+
+
+---------------SEPARATE SPECIFICATIONS (MIX AND MATCH)---------------
+**NOTE: do not use multiple add or removeLabelIds, add all in 1 list**
+**    - add or removeLabelIds must be separately add (SEE EXAMPLES)**
+**    - using label 'TRASH' by default removes all other labels**
+'addLabelIds': ['LIST', 'LABELS']       #move email to category
+'removeLabelIds': ['LIST', 'LABELS']    #remove email from category
+
+
+is:read                                 #email has been read
+is:unread                               #email is unread
+is:starred                              #email is starred
+is:important                            #email is important
+is:trashed                              #email is trashed
+has:attachment                          #email has an attachment
+
+
+**NOTE: only one label can be specified per, but calling multiple
+        times is possible (SEE EXAMPLES)**
+label:[label-name]                      #email is in label
+-label:[label-name]                     #exclude email in label
+
+
+**NOTE: only one email can be specified per, but calling multiple
+        times is possible (SEE EXAMPLES)**
+from:[sender@example.com]               #email is from sender
+to:[receiver@example.com]               #email is to sender
+cc:[allparticipants@example.com]        #carbon copy is visible
+bcc:[allparticipants@example.com]       #carbon copy is not visible
+
+
+subject:[keyword]                       #subject contains keyword
+"[keyword]"                             #body contains keyword
+
+
+after:[YYYY/MM/DD]                      #email created after date
+before:[YYYY/MM/DD]                     #email created before date
+
+
+**NOTE: order does matter. format =  XyYmZd (X, Y, Z = quantity)**
+older_than:[Xd]         (X = numberOf, d = day, m = month, y = year)
+newer_than:[Xd]         (X = numberOf, d = day, m = month, y = year)
+
+
+------------------------INDIVIDUAL EXAMPLES-------------------------
+**NOTE: anything not specified here is called plainly**
+'addLabelIds': ['TRASH']
+'addLabelIds': ['STARRED', 'IMPORTANT', 'YOURCUSTOMLABEL']
+'removeLabelIds': ['STARRED', 'IMPORTANT', 'YOURCUSTOMLABEL']
+
+
+label:spam
+-label:inbox
+
+
+from:example@sjsu.edu
+to:example@gmail.com
+cc:example@yahoo.com
+bcc:example@icloud.com
+
+
+subject:"any message title you are searching for"
+"any message in the entire email you are searching for"
+
+
+after:[2000/2/28]
+before:[2000/12/31]
+
+
+older_than:[8d]
+older_than:[8m]
+older_than:[8y]
+older_than:[8y8d]
+older_than:[8y8m8d]
+
+
+newer_than:[8d]
+newer_than:[8m]
+newer_than:[8y]
+newer_than:[8y8d]
+newer_than:[8y8m8d]
+
+
+------------------------------EXAMPLES------------------------------
+'addLabelIds': ['TRASH'], is:read AND older_than:9d AND newer_than:20d
+'addLabelIds': ['STARRED', 'IMPORTANT'], (from:sender1@gmail.com OR from:sender2@gmail.com) AND subject:"cs122 project"
+'addLabelIds': ['TRASH'], (is:read AND -label:starred OR is:unread AND label:spam)
+'addLabelIds': ['IMPORTANT'], 'removeLabelIds': ['STARRED'], (from:sender1@gmail.com OR from:sender2@gmail.com)
+
+
+
+the example preset file above does these respectively:
+PROMPT: Trash all read emails after 9 days but younger than 20 days
+PROMPT: Star and important all read emails from sender1@gmail.com or sender2@gmail.com that has subject title "cs122 project"
+PROMPT: Trash all emails that are (read and not starred) or (unread and in spam)
+PROMPT: Move all emails from sender1@gmail.com or sender2@gmail.com from starred to important

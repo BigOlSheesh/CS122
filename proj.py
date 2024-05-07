@@ -426,10 +426,12 @@ class ProgramFunction:
 
                         else:
                             query = G.listEmailQuery(specification)
-                self.configureHistoryLogTextBox("MODIFICATION REQUEST(S): " + str(modifyRequestDict) +
-                                                "\nSPECIFICATION(S): " + str(query) +
-                                                "\n- - - - - - - S T A R T  H E R E - - - - - - -")
-                G.moveEmail(modifyRequestDict, G.searchEmails(query))
+                    self.configureHistoryLogTextBox("MODIFICATION REQUEST(S): " + str(modifyRequestDict) +
+                                                    "\nSPECIFICATION(S): " + str(query) +
+                                                    "\n- - - - - - - S T A R T  H E R E - - - - - - -")
+                    G.moveEmail(modifyRequestDict, G.searchEmails(query))
+                else:
+                    messagebox.showerror("Invalid Preset", "There was no modification request or there was no specification. Please fix and try again.")
 
 
     def createNewEmailList(self):

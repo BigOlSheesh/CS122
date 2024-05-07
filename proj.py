@@ -73,6 +73,31 @@ class ProgramFunction:
         self.cancelEmailListButton = None           #note this widget will be placed/unplaced later, it is not initially shown
         self.deleteEmailListButton = None
 
+        #user friendly buttons
+        self.createSpecificationTextBox = None
+        self.addToOperant = None
+        self.addLabelIds = None
+        self.removeLabelIds = None
+        self.inLabel = None
+        self.notInLabel = None
+        self.hasAttachment = None 
+        self.fromEmail = None
+        self.toEmail = None
+        self.ccEmail = None
+        self.bccEmail = None
+        self.subjectKeyword = None
+        self.Keyword = None
+        self.afterDate = None
+        self.beforeDate = None
+        self.olderThan = None
+        self.newerThan = None
+        self.leftParenthesisOperant = None
+        self.andOperant = None
+        self.orOperant = None
+        self.slashOperant = None
+        self.rightParenthesisOperant = None
+        #----------------------
+
         self.presetSelectionTextBox = None
         self.emailSelectionTextBox  = None
         self.historyLogTextBox  = None
@@ -111,34 +136,80 @@ class ProgramFunction:
                                         values = PresetManager.listFolderFileNames("emailList"), state = "readonly", dropdown_hover_color="gray")
         self.historyLogLabel = ctk.CTkLabel(master=self.frame, width = 464, height = 35, bg_color= "#282828",
                                            text_color= "white", font = ("Arial", 20), text = " H I S T O R Y ")
-        
-        self.runPresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " R U N ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+
+        self.runPresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " R U N ", bg_color= "#282828", fg_color="#42513c", hover_color="#678c5a"
                                             , state = DISABLED, command=self.runPreset)
-        self.createPresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " C R E A T E ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.createPresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " C R E A T E ", bg_color= "#282828", fg_color="#3c4252", hover_color="#5a678c"
                                             , state = NORMAL, command=self.createNewPreset)
-        self.editPresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " E D I T ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.editPresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " E D I T ", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
                                             , state = DISABLED, command=self.editPreset)
-        self.savePresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " S A V E ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.savePresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " S A V E ", bg_color= "#282828", fg_color="#42513c", hover_color="#678c5a"
                                             , state = NORMAL, command=self.savePreset)
-        self.cancelPresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " C A N C E L ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.cancelPresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " C A N C E L ", bg_color= "#282828", fg_color="#513c3c", hover_color="#8c5a5a"
                                             , state = NORMAL, command=self.cancelPreset)
-        self.deletePresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " D E L E T E ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.deletePresetButton = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " D E L E T E ", bg_color= "#282828", fg_color="#513c3c", hover_color="#8c5a5a"
                                             , state = DISABLED, command=self.deletePreset)
 
-        self.createEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " C R E A T E ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.createEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " C R E A T E ", bg_color= "#282828", fg_color="#3c4252", hover_color="#5a678c"
                                             , state = NORMAL, command=self.createNewEmailList)
-        self.editEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " E D I T ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.editEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " E D I T ", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
                                             , state = DISABLED, command=self.editEmailList)
-        self.saveEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " S A V E ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.saveEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " S A V E ", bg_color= "#282828", fg_color="#42513c", hover_color="#678c5a"
                                             , state = NORMAL, command=self.saveEmailList)
-        self.cancelEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " C A N C E L ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.cancelEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " C A N C E L ", bg_color= "#282828", fg_color="#513c3c", hover_color="#8c5a5a"
                                             , state = NORMAL, command=self.cancelEmailList)
-        self.deleteEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " D E L E T E ", bg_color= "#282828", fg_color="#4c4c4c", hover_color="gray"
+        self.deleteEmailListButton = ctk.CTkButton(master=self.frame, width = 152, height = 35, text = " D E L E T E ", bg_color= "#282828", fg_color="#513c3c", hover_color="#8c5a5a"
                                             , state = DISABLED, command=self.deleteEmailList)
-
+        
         self.presetSelectionTextBox = ctk.CTkTextbox(master=self.frame, width = 464, height = 100, bg_color= "#282828", fg_color="#3e3e3e", state = DISABLED)         #will set state to normal when edit is pressed
         self.emailSelectionTextBox = ctk.CTkTextbox(master=self.frame, width = 464, height = 100, bg_color= "#282828", fg_color="#3e3e3e", state = DISABLED)          #will set state to normal when edit is pressed
         self.historyLogTextBox = ctk.CTkTextbox(master=self.frame, width = 464, height = 385, bg_color= "#282828", fg_color="#3e3e3e", state = DISABLED)              #will remain uneditable because it is history log
+
+        #user friendly buttons
+        self.createSpecificationTextBox = ctk.CTkTextbox(master=self.frame, width = 347, height = 38, bg_color= "#282828", fg_color="#3e3e3e", state = NORMAL)     #will remain editable (normal state)
+        self.addToOperant = ctk.CTkButton(master=self.frame, width = 113, height = 38, text = "ADD", bg_color= "#282828", fg_color="#42513c", hover_color="#678c5a"
+                                            , state = NORMAL, command=lambda: self.presetSelectionTextBox.insert(END, self.createSpecificationTextBox.get("0.0", END).rstrip()))
+        self.addLabelIds = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "MOVE TO:", bg_color= "#282828", fg_color="#3c4252", hover_color="#5a678c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("addLabelIds: [YOUR, LABELS, HERE]"))
+        self.removeLabelIds = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "REMOVE FROM:", bg_color= "#282828", fg_color="#3c4252", hover_color="#5a678c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("removeLabelIds: [YOUR, LABELS, HERE]"))
+        self.inLabel = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " LABELED:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("in:"))
+        self.notInLabel = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "NOT LABELED:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("-label:"))
+        self.hasAttachment = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "ATTACHMENT", bg_color= "#282828", fg_color="#524f3c", hover_color="#8c855a"
+                                            , state = NORMAL, command=lambda: self.presetSelectionTextBox.insert(END, "has:attachment"))
+        self.fromEmail = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "FROM EMAIL:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("from:"))
+        self.toEmail = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " TO EMAIL:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("to:"))
+        self.ccEmail = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "CC EMAIL:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("cc:"))
+        self.bccEmail = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "BCC EMAIL:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("bcc:"))
+        self.subjectKeyword = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "SUBJECTLINE:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("subject:"))
+        self.Keyword = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "KEYWORD:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox(""))
+        self.afterDate = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "AFTER DATE:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("after:"))
+        self.beforeDate = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "BEFORE DATE:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("before:"))
+        self.olderThan = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "OLDER THAN:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("older_than:"))
+        self.newerThan = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = "NEWER THAN:", bg_color= "#282828", fg_color="#3c5052", hover_color="#5a898c"
+                                            , state = NORMAL, command=lambda: self.configureCreateSpecificationTextBox("newer_than:"))
+        self.orOperant = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " OR ", bg_color= "#282828", fg_color="#524f3c", hover_color="#8c855a"
+                                            , state = NORMAL, command=lambda: self.presetSelectionTextBox.insert(END, " OR "))
+        self.andOperant = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " AND ", bg_color= "#282828", fg_color="#524f3c", hover_color="#8c855a"
+                                            , state = NORMAL, command=lambda: self.presetSelectionTextBox.insert(END, " AND "))
+        self.slashOperant = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " / ", bg_color= "#282828", fg_color="#524f3c", hover_color="#8c855a"
+                                            , state = NORMAL, command=lambda: self.presetSelectionTextBox.insert(END, "/ "))
+        self.leftParenthesisOperant = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " ( ", bg_color= "#282828", fg_color="#524f3c", hover_color="#8c855a"
+                                            , state = NORMAL, command=lambda: self.presetSelectionTextBox.insert(END, "( "))
+        self.rightParenthesisOperant = ctk.CTkButton(master=self.frame, width = 113, height = 35, text = " ) ", bg_color= "#282828", fg_color="#524f3c", hover_color="#8c855a"
+                                            , state = NORMAL, command=lambda: self.presetSelectionTextBox.insert(END, " )"))
+        #---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     #when user selects something in the combobox under presets
     def configurePresetTextBox(self, fileName = ""):
@@ -191,9 +262,79 @@ class ProgramFunction:
         self.historyLogTextBox.configure(state=DISABLED)
         self.historyLog = self.historyLogTextBox.get("0.0", END).rstrip()
 
+    def configureCreateSpecificationTextBox(self, contentString):
+        self.createSpecificationTextBox.delete("0.0", END)
+        self.createSpecificationTextBox.insert("0.0", contentString)
+
+    def hideEmailConfig(self):
+        self.askPresetLabel2.place_forget()
+        self.comboBox2.place_forget()
+        self.emailSelectionTextBox.place_forget()
+        self.createEmailListButton.place_forget()
+        self.editEmailListButton.place_forget()
+        self.deleteEmailListButton.place_forget()
+
+    def showEmailConfig(self):
+        self.askPresetLabel2.place(x = 508, y = 295)
+        self.comboBox2.place(x = 508, y = 334)
+        self.emailSelectionTextBox.place(x = 508, y = 388)
+        self.createEmailListButton.place(x = 508, y = 492)      #margin of 4 in between each button
+        self.editEmailListButton.place(x = 664, y = 492)
+        self.deleteEmailListButton.place(x = 820, y = 492)
+
+    def hideSpecificationConfig(self):
+        self.createSpecificationTextBox.place_forget()
+        self.addToOperant.place_forget()
+        self.addLabelIds.place_forget()
+        self.removeLabelIds.place_forget()
+        self.inLabel.place_forget()
+        self.notInLabel.place_forget()
+        self.hasAttachment.place_forget()
+        self.fromEmail.place_forget()
+        self.toEmail.place_forget()
+        self.ccEmail.place_forget()
+        self.bccEmail.place_forget()
+        self.subjectKeyword.place_forget()
+        self.Keyword.place_forget()
+        self.afterDate.place_forget()
+        self.beforeDate.place_forget()
+        self.olderThan.place_forget()
+        self.newerThan.place_forget()
+        self.leftParenthesisOperant.place_forget()
+        self.andOperant.place_forget()
+        self.orOperant.place_forget()
+        self.slashOperant.place_forget()
+        self.rightParenthesisOperant.place_forget()
+
+    def showSpecificationConfig(self):
+        self.createSpecificationTextBox.place(x = 508, y = 291)
+        self.addToOperant.place(x = 859, y = 291)
+        self.addLabelIds.place(x = 508, y = 334)
+        self.removeLabelIds.place(x = 625, y = 334)
+        self.inLabel.place(x = 742, y = 334)
+        self.notInLabel.place(x = 859, y = 334)
+        self.fromEmail.place(x = 508, y = 373)        
+        self.toEmail.place(x = 625, y = 373)
+        self.ccEmail.place(x = 742, y = 373)
+        self.bccEmail.place(x = 859, y = 373)
+        self.subjectKeyword.place(x = 508, y = 412)
+        self.Keyword.place(x = 625, y = 412)
+        self.afterDate.place(x = 742, y = 412)
+        self.beforeDate.place(x = 859, y = 412)
+        self.olderThan.place(x = 508, y = 451)
+        self.newerThan.place(x = 625, y = 451)
+        self.hasAttachment.place(x = 742, y = 451)
+        self.leftParenthesisOperant.place(x = 859, y = 451)
+        self.andOperant.place(x = 508, y = 490)
+        self.orOperant.place(x = 625, y = 490)
+        self.slashOperant.place(x = 742, y = 490)
+        self.rightParenthesisOperant.place(x = 859, y = 490)
+
     #when user clicks create new preset
     def createNewPreset(self):
         self.resetFunctions("preset", True, True)
+        self.hideEmailConfig()
+        self.showSpecificationConfig()
         self.createPresetButton.place_forget()
         self.savePresetButton.place(x = 508, y = 245)
         self.editPresetButton.place_forget()
@@ -209,11 +350,16 @@ class ProgramFunction:
         PresetManager.deleteEntirePreset(self.comboBox.get())
         self.comboBox.configure(values=PresetManager.listFolderFileNames("presets"))
         self.resetFunctions("preset", True, True)
+        self.showEmailConfig()
+        self.hideSpecificationConfig()
         self.runPresetButton.configure(state = DISABLED)
         self.editPresetButton.configure(state = DISABLED)
         self.deletePresetButton.configure(state = DISABLED)
 
     def editPreset(self):
+        self.hideEmailConfig()
+        self.showSpecificationConfig()
+
         self.createPresetButton.place_forget()
         self.savePresetButton.place(x = 508, y = 245)
         self.editPresetButton.place_forget()
@@ -243,6 +389,8 @@ class ProgramFunction:
 
         self.comboBox.configure(values=PresetManager.listFolderFileNames("presets"))
         self.resetFunctions("preset", True, True)
+        self.showEmailConfig()
+        self.hideSpecificationConfig()
         self.resetHistoryLog()
         
     def cancelPreset(self):
@@ -252,6 +400,8 @@ class ProgramFunction:
         self.editPresetButton.place(x = 625, y = 245)
 
         self.resetFunctions("preset", True, True)
+        self.showEmailConfig()
+        self.hideSpecificationConfig()
         self.resetHistoryLog()
 
     def runPreset(self):

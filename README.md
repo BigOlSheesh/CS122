@@ -86,8 +86,8 @@ Install the necessary modules with pip:
 ## Snapshot
 
 ![image](https://github.com/BigOlSheesh/EmailButler/assets/104650216/197cd30a-924a-41e2-8fa1-e5f91d767694)
-
 ![image2](https://github.com/BigOlSheesh/EmailButler/assets/104650216/771a4a22-9d96-40c2-9c7e-8f6e96a6509b)
+![image3](https://github.com/BigOlSheesh/EmailButler/assets/104650216/0531dfb0-3384-4d27-91fd-4cab9cf4f6c7)
 
 ## Usage
 This Python application assists users in the process of automated deletion of emails. The GUI is built with Tkinter, Custom Tkinter, and Pillow. It utilizes Gmail API to accomplish the deletion of emails.

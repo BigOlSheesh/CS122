@@ -18,18 +18,18 @@ Alex Wong alex.wong02@sjsu.edu
 
 #Functionality: With a variety of preset rules, the user can mix and combine different presets with specifications to accommodate an automative process for regulating both incoming messages and old messages in their inbox. Users may added exceptions to the rule taking effect under certain conditions while adhering to its functionality for the rest of the cases. For instance, user can choose a rule to delete emails after 90 days, and can added an exception for emails they've personally viewed (perhaps due to witheld importance) or kept labeled.
 
-#Application should cover: Web scraping / GUI programming
+#Application should cover: Using API libraries / GUI programming
 
-#Assumptions: User use Gmail
+#Assumptions: User uses Gmail
 
 #High-level description:
 
 1) GUI will allow user to set rules, automations, exceptions, view changes the program makes, and takes in confirmation.
 2) GUI will provide the details for the program to retrieve the information to access the user's inbox.
-3) Code will web scrap using the user's provided information and presets to make changes directly on their account and logging changes made online back to the GUI for the user to view the history.
+3) Code will use the user's provided information and presets to make changes directly on their account and logging changes made online back to the GUI for the user to view the history.
 4) General outline of creating presets include: a premade list of rules, exceptions, and limited specifications for user to choose from and create. The application will save any presets the user decides to create for future usage.
 5) Executing these presets, the code will filter, archive, delete, or label the necessary changes of each preset the user has saved.
-6) When user enters the GUI, they can click a button 'optimize' to start the process of making changes to the user's inbox, following the given presets saved within the application. The program will return feedback via the GUI to the user when operations are complete.
+6) When user enters the GUI, they can click a button 'Run' to start the process of making changes to the user's inbox, following the given presets saved within the application. The program will return feedback via the GUI to the user when operations are complete.
 
 ### Built with
 * CustomTkinter [https://customtkinter.tomschimansky.com/](https://customtkinter.tomschimansky.com/)

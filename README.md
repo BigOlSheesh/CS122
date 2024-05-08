@@ -81,7 +81,7 @@ Install the necessary modules with pip:
   ```
 
 ## Snapshot
-![image](https://github.com/BigOlSheesh/ZenMail/assets/104650216/d06ce8e3-f8c4-4974-956d-1113dfc379d1)
+![image](https://github.com/BigOlSheesh/EmailButler/assets/104650216/c0ff9fce-89fe-4baa-955a-8404de9caf89)
 
 ## Usage
 This Python application assists users in the process of automated deletion of emails. The GUI is built with Tkinter, Custom Tkinter, and Pillow. It utilizes Gmail API to accomplish the deletion of emails.
